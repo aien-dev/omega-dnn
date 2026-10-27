@@ -1,0 +1,26 @@
+rms_norm       cases= 200 worst_err/tol=0.999 violations=0
+layer_norm     cases= 200 worst_err/tol=0.995 violations=0
+softmax        cases= 200 worst_err/tol=0.993 violations=0
+softmax_large  cases= 200 worst_err/tol=0.699 violations=0
+silu           cases= 200 worst_err/tol=1.000 violations=0
+gelu_erf       cases= 200 worst_err/tol=0.998 violations=0
+gelu_tanh      cases= 200 worst_err/tol=0.998 violations=0
+relu           cases= 200 worst_err/tol=0.000 violations=0
+swiglu         cases= 200 worst_err/tol=0.998 violations=0
+add            cases= 200 worst_err/tol=1.000 violations=0
+mul            cases= 200 worst_err/tol=0.998 violations=0
+bias           cases= 200 worst_err/tol=1.000 violations=0
+rope           cases= 200 worst_err/tol=0.993 violations=0
+rope_interleaved cases= 200 worst_err/tol=0.998 violations=0
+matmul         cases= 200 worst_err/tol=0.993 violations=0
+attention      cases= 200 worst_err/tol=1.000 violations=0
+paged_decode   cases= 200 worst_err/tol=0.999 violations=0
+conv2d_algo0   cases= 200 worst_err/tol=0.997 violations=0
+conv2d_algo1   cases= 200 worst_err/tol=0.997 violations=0
+maxpool        cases= 200 worst_err/tol=0.000 violations=0
+avgpool        cases= 200 worst_err/tol=0.999 violations=0
+global_avgpool cases= 200 worst_err/tol=0.970 violations=0
+fused_mm_bias_swiglu cases= 200 worst_err/tol=0.990 violations=0
+fusion_passes  cases= 200 worst_err/tol=0.000 violations=0
+TOTAL ops=24 violations=0
+rc=0

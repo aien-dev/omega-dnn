@@ -1,0 +1,72 @@
+PASS gqa_f32_qwen3_4b_32q8kv_ctx1 n=4096 rc=OK violations=0 worst_scaled_err=0 chip_ns=218146 call_ns=104602977 calls=1 unwritten=0 kv_staged=8192/8192 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_qwen3_4b_32q8kv_ctx17 n=4096 rc=OK violations=0 worst_scaled_err=0.00198312 chip_ns=103921 call_ns=287971 calls=1 unwritten=0 kv_staged=139264/139264 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_qwen3_4b_32q8kv_ctx256 n=4096 rc=OK violations=0 worst_scaled_err=0.00219175 chip_ns=107841 call_ns=596549 calls=1 unwritten=0 kv_staged=2097152/2097152 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_qwen3_4b_32q8kv_ctx2048 n=4096 rc=OK violations=0 worst_scaled_err=0.00376301 chip_ns=623621 call_ns=3506046 calls=1 unwritten=0 kv_staged=16777216/16777216 blocks=1/1 | mutants 4/4 SLOT:CAUGHT(rc=OK,bad=4090) NO_RESCALE:CAUGHT(rc=OK,bad=3905) Q_ROW:CAUGHT(rc=OK,bad=4086) OUT_ROW:CAUGHT(rc=OK,bad=4086)
+PASS gqa_f32_qwen3_4b_32q8kv_ctx127 n=4096 rc=OK violations=0 worst_scaled_err=0.0019369 chip_ns=107601 call_ns=310595 calls=1 unwritten=0 kv_staged=1040384/1040384 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_qwen3_4b_32q8kv_ctx128 n=4096 rc=OK violations=0 worst_scaled_err=0.00195072 chip_ns=106177 call_ns=133730 calls=1 unwritten=0 kv_staged=1048576/1048576 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_qwen3_4b_32q8kv_ctx129 n=4096 rc=OK violations=0 worst_scaled_err=0.00222211 chip_ns=105281 call_ns=129297 calls=1 unwritten=0 kv_staged=1056768/1056768 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_qwen3_4b_32q8kv_ctx300 n=4096 rc=OK violations=0 worst_scaled_err=0.00262496 chip_ns=107393 call_ns=174962 calls=1 unwritten=0 kv_staged=2457600/2457600 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_qwen3_4b_32q8kv_ctx1000 n=4096 rc=OK violations=0 worst_scaled_err=0.00318626 chip_ns=312499 call_ns=627846 calls=1 unwritten=0 kv_staged=8192000/8192000 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_gqa8_32q4kv_ctx1 n=4096 rc=OK violations=0 worst_scaled_err=0 chip_ns=105233 call_ns=372915 calls=1 unwritten=0 kv_staged=4096/4096 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_gqa8_32q4kv_ctx17 n=4096 rc=OK violations=0 worst_scaled_err=0.00213223 chip_ns=103441 call_ns=108593 calls=1 unwritten=0 kv_staged=69632/69632 blocks=1/1 | mutants 1/1 KV_HEAD:CAUGHT(rc=OK,bad=4095)
+PASS gqa_f32_gqa8_32q4kv_ctx256 n=4096 rc=OK violations=0 worst_scaled_err=0.00193136 chip_ns=106161 call_ns=266834 calls=1 unwritten=0 kv_staged=1048576/1048576 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_gqa8_32q4kv_ctx2048 n=4096 rc=OK violations=0 worst_scaled_err=0.00246504 chip_ns=518149 call_ns=881144 calls=1 unwritten=0 kv_staged=8388608/8388608 blocks=1/1 | mutants 4/4 SLOT:CAUGHT(rc=OK,bad=4084) NO_RESCALE:CAUGHT(rc=OK,bad=3914) Q_ROW:CAUGHT(rc=OK,bad=4078) OUT_ROW:CAUGHT(rc=OK,bad=4078)
+PASS gqa_f32_gqa8_32q4kv_ctx127 n=4096 rc=OK violations=0 worst_scaled_err=0.00243573 chip_ns=104897 call_ns=254962 calls=1 unwritten=0 kv_staged=520192/520192 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_gqa8_32q4kv_ctx128 n=4096 rc=OK violations=0 worst_scaled_err=0.00180964 chip_ns=104177 call_ns=114961 calls=1 unwritten=0 kv_staged=524288/524288 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_gqa8_32q4kv_ctx129 n=4096 rc=OK violations=0 worst_scaled_err=0.00188256 chip_ns=104305 call_ns=114737 calls=1 unwritten=0 kv_staged=528384/528384 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_gqa8_32q4kv_ctx300 n=4096 rc=OK violations=0 worst_scaled_err=0.00199715 chip_ns=105281 call_ns=143329 calls=1 unwritten=0 kv_staged=1228800/1228800 blocks=1/1 | mutants 0/0 
+PASS gqa_f32_gqa8_32q4kv_ctx1000 n=4096 rc=OK violations=0 worst_scaled_err=0.00296202 chip_ns=312947 call_ns=463956 calls=1 unwritten=0 kv_staged=4096000/4096000 blocks=1/1 | mutants 0/0 
+PASS gqa_rows_f32_qwen3_4b_32q8kv_base0_rows1 n=4096 rc=OK violations=0 worst_scaled_err=0 chip_ns=104977 call_ns=368755 calls=1 unwritten=0 kv_staged=8192/8192 blocks=1/1 | mutants 0/0 
+PASS gqa_rows_f32_qwen3_4b_32q8kv_base17_rows5 n=20480 rc=OK violations=0 worst_scaled_err=0.00238734 chip_ns=105457 call_ns=431220 calls=1 unwritten=0 kv_staged=180224/901120 blocks=1/5 | mutants 0/0 
+PASS gqa_rows_f32_qwen3_4b_32q8kv_base300_rows40 n=163840 rc=OK violations=0 worst_scaled_err=0.00342033 chip_ns=628453 call_ns=1412332 calls=2 unwritten=0 kv_staged=2785280/111411200 blocks=1/40 | mutants 4/4 SLOT:CAUGHT(rc=OK,bad=163639) NO_RESCALE:CAUGHT(rc=OK,bad=96453) Q_ROW:CAUGHT(rc=OK,bad=163612) OUT_ROW:CAUGHT(rc=OK,bad=163612)
+PASS gqa_rows_f32_gqa8_32q4kv_base0_rows1 n=4096 rc=OK violations=0 worst_scaled_err=0 chip_ns=107409 call_ns=315139 calls=1 unwritten=0 kv_staged=4096/4096 blocks=1/1 | mutants 0/0 
+PASS gqa_rows_f32_gqa8_32q4kv_base17_rows5 n=20480 rc=OK violations=0 worst_scaled_err=0.00296019 chip_ns=103489 call_ns=124337 calls=1 unwritten=0 kv_staged=90112/450560 blocks=1/5 | mutants 0/0 
+PASS gqa_rows_f32_gqa8_32q4kv_base300_rows40 n=163840 rc=OK violations=0 worst_scaled_err=0.0038327 chip_ns=732998 call_ns=928968 calls=2 unwritten=0 kv_staged=1392640/55705600 blocks=1/40 | mutants 4/4 SLOT:CAUGHT(rc=OK,bad=163626) NO_RESCALE:CAUGHT(rc=OK,bad=98605) Q_ROW:CAUGHT(rc=OK,bad=163626) OUT_ROW:CAUGHT(rc=OK,bad=163626)
+PASS gqa_f32_large_scores_32q4kv_ctx256 n=4096 rc=OK violations=0 worst_scaled_err=0.114366 chip_ns=105937 call_ns=315475 calls=1 unwritten=0 kv_staged=1048576/1048576 blocks=1/1 | mutants 1/1 NO_MAX:CAUGHT(rc=OK,bad=4096)
+PASS gqa_f32_mha_16q16kv_ctx300 n=2048 rc=OK violations=0 worst_scaled_err=0.00289382 chip_ns=107313 call_ns=440084 calls=1 unwritten=0 kv_staged=4915200/4915200 blocks=1/1 | mutants 3/3 Q_ROW:CAUGHT(rc=OK,bad=2045) OUT_ROW:CAUGHT(rc=OK,bad=2048) KV_HEAD:CAUGHT(rc=OK,bad=2045)
+PASS paged_bf16_qwen3_4b_32q8kv_bs16_ctx1 n=4096 rc=OK violations=0 worst_scaled_err=0 chip_ns=105313 call_ns=266178 calls=1 unwritten=0 kv_staged=65536/65536 blocks=1/1 | mutants 1/1 KV_HEAD:CAUGHT(rc=OK,bad=4096)
+PASS paged_bf16_qwen3_4b_32q8kv_bs16_ctx17 n=4096 rc=OK violations=0 worst_scaled_err=0.00234242 chip_ns=104545 call_ns=245314 calls=1 unwritten=0 kv_staged=131072/131072 blocks=2/2 | mutants 2/2 KV_HEAD:CAUGHT(rc=OK,bad=4096) SLOT:CAUGHT(rc=OK,bad=4096)
+PASS paged_bf16_qwen3_4b_32q8kv_bs16_ctx256 n=4096 rc=OK violations=0 worst_scaled_err=0.00164 chip_ns=105073 call_ns=301667 calls=1 unwritten=0 kv_staged=1048576/1048576 blocks=16/16 | mutants 0/0 
+PASS paged_bf16_qwen3_4b_32q8kv_bs16_ctx2048 n=4096 rc=OK violations=0 worst_scaled_err=0.000652093 chip_ns=108625 call_ns=844215 calls=1 unwritten=0 kv_staged=8388608/8388608 blocks=128/128 | mutants 5/5 KV_HEAD:CAUGHT(rc=OK,bad=4094) SLOT:CAUGHT(rc=OK,bad=4088) NO_RESCALE:CAUGHT(rc=OK,bad=3458) Q_ROW:CAUGHT(rc=OK,bad=4088) OUT_ROW:CAUGHT(rc=OK,bad=4088)
+PASS paged_bf16_qwen3_4b_32q8kv_bs16_ctx127 n=4096 rc=OK violations=0 worst_scaled_err=0.00206248 chip_ns=113105 call_ns=333507 calls=1 unwritten=0 kv_staged=524288/524288 blocks=8/8 | mutants 0/0 
+PASS paged_bf16_qwen3_4b_32q8kv_bs16_ctx128 n=4096 rc=OK violations=0 worst_scaled_err=0.00186796 chip_ns=111009 call_ns=134673 calls=1 unwritten=0 kv_staged=524288/524288 blocks=8/8 | mutants 0/0 
+PASS paged_bf16_qwen3_4b_32q8kv_bs16_ctx129 n=4096 rc=OK violations=0 worst_scaled_err=0.00209681 chip_ns=107809 call_ns=343619 calls=1 unwritten=0 kv_staged=589824/589824 blocks=9/9 | mutants 0/0 
+PASS paged_bf16_qwen3_4b_32q8kv_bs16_ctx300 n=4096 rc=OK violations=0 worst_scaled_err=0.00196382 chip_ns=107809 call_ns=149202 calls=1 unwritten=0 kv_staged=1245184/1245184 blocks=19/19 | mutants 0/0 
+PASS paged_bf16_qwen3_4b_32q8kv_bs16_ctx1000 n=4096 rc=OK violations=0 worst_scaled_err=0.00109341 chip_ns=109265 call_ns=434932 calls=1 unwritten=0 kv_staged=655360/4128768 blocks=10/63 | mutants 0/0 
+PASS paged_bf16_gqa8_32q4kv_bs16_ctx1 n=4096 rc=OK violations=0 worst_scaled_err=0 chip_ns=105793 call_ns=351843 calls=1 unwritten=0 kv_staged=32768/32768 blocks=1/1 | mutants 1/1 KV_HEAD:CAUGHT(rc=OK,bad=4096)
+PASS paged_bf16_gqa8_32q4kv_bs16_ctx17 n=4096 rc=OK violations=0 worst_scaled_err=0.00184997 chip_ns=105009 call_ns=253059 calls=1 unwritten=0 kv_staged=65536/65536 blocks=2/2 | mutants 2/2 KV_HEAD:CAUGHT(rc=OK,bad=4096) SLOT:CAUGHT(rc=OK,bad=4094)
+PASS paged_bf16_gqa8_32q4kv_bs16_ctx256 n=4096 rc=OK violations=0 worst_scaled_err=0.00174993 chip_ns=106449 call_ns=278130 calls=1 unwritten=0 kv_staged=524288/524288 blocks=16/16 | mutants 0/0 
+PASS paged_bf16_gqa8_32q4kv_bs16_ctx2048 n=4096 rc=OK violations=0 worst_scaled_err=0.000692334 chip_ns=110337 call_ns=605973 calls=1 unwritten=0 kv_staged=4194304/4194304 blocks=128/128 | mutants 5/5 KV_HEAD:CAUGHT(rc=OK,bad=4092) SLOT:CAUGHT(rc=OK,bad=4081) NO_RESCALE:CAUGHT(rc=OK,bad=3413) Q_ROW:CAUGHT(rc=OK,bad=4082) OUT_ROW:CAUGHT(rc=OK,bad=4082)
+PASS paged_bf16_gqa8_32q4kv_bs16_ctx127 n=4096 rc=OK violations=0 worst_scaled_err=0.00233987 chip_ns=104945 call_ns=267698 calls=1 unwritten=0 kv_staged=262144/262144 blocks=8/8 | mutants 0/0 
+PASS paged_bf16_gqa8_32q4kv_bs16_ctx128 n=4096 rc=OK violations=0 worst_scaled_err=0.00222576 chip_ns=105793 call_ns=116753 calls=1 unwritten=0 kv_staged=262144/262144 blocks=8/8 | mutants 0/0 
+PASS paged_bf16_gqa8_32q4kv_bs16_ctx129 n=4096 rc=OK violations=0 worst_scaled_err=0.00158538 chip_ns=105665 call_ns=278066 calls=1 unwritten=0 kv_staged=294912/294912 blocks=9/9 | mutants 0/0 
+PASS paged_bf16_gqa8_32q4kv_bs16_ctx300 n=4096 rc=OK violations=0 worst_scaled_err=0.00184017 chip_ns=106369 call_ns=133778 calls=1 unwritten=0 kv_staged=622592/622592 blocks=19/19 | mutants 0/0 
+PASS paged_bf16_gqa8_32q4kv_bs16_ctx1000 n=4096 rc=OK violations=0 worst_scaled_err=0.00133 chip_ns=108417 call_ns=353299 calls=1 unwritten=0 kv_staged=327680/2064384 blocks=10/63 | mutants 0/0 
+PASS paged_bf16_split1_32q8kv_ctx1000 n=4096 rc=OK violations=0 worst_scaled_err=0.00241483 chip_ns=210130 call_ns=517205 calls=1 unwritten=0 kv_staged=4128768/4128768 blocks=63/63 | mutants 0/0 
+PASS paged_bf16_split2_32q8kv_ctx1000 n=4096 rc=OK violations=0 worst_scaled_err=0.00192453 chip_ns=105505 call_ns=407715 calls=1 unwritten=0 kv_staged=4128768/4128768 blocks=63/63 | mutants 2/2 KV_HEAD:CAUGHT(rc=OK,bad=4094) SLOT:CAUGHT(rc=OK,bad=4089)
+PASS paged_bf16_split4_32q8kv_ctx1000 n=4096 rc=OK violations=0 worst_scaled_err=0.0012482 chip_ns=173585 call_ns=474308 calls=1 unwritten=0 kv_staged=4128768/4128768 blocks=63/63 | mutants 0/0 
+PASS paged_bf16_split8_32q8kv_ctx1000 n=4096 rc=OK violations=0 worst_scaled_err=0.000781902 chip_ns=106561 call_ns=468116 calls=1 unwritten=0 kv_staged=4128768/4128768 blocks=63/63 | mutants 0/0 
+PASS paged_bf16_split16_32q8kv_ctx1000 n=4096 rc=OK violations=0 worst_scaled_err=0.000781902 chip_ns=73041 call_ns=449364 calls=1 unwritten=0 kv_staged=4128768/4128768 blocks=63/63 | mutants 0/0 
+PASS paged_bf16_split1_32q8kv_ctx100 n=4096 rc=OK violations=0 worst_scaled_err=0.00257739 chip_ns=103665 call_ns=112177 calls=1 unwritten=0 kv_staged=131072/458752 blocks=2/7 | mutants 0/0 
+PASS paged_bf16_split2_32q8kv_ctx100 n=4096 rc=OK violations=0 worst_scaled_err=0.00257739 chip_ns=103953 call_ns=250802 calls=1 unwritten=0 kv_staged=131072/458752 blocks=2/7 | mutants 0/0 
+PASS paged_bf16_split4_32q8kv_ctx100 n=4096 rc=OK violations=0 worst_scaled_err=0.00257739 chip_ns=103232 call_ns=123201 calls=1 unwritten=0 kv_staged=131072/458752 blocks=2/7 | mutants 0/0 
+PASS paged_bf16_split8_32q8kv_ctx100 n=4096 rc=OK violations=0 worst_scaled_err=0.00257739 chip_ns=103121 call_ns=140033 calls=1 unwritten=0 kv_staged=131072/458752 blocks=2/7 | mutants 0/0 
+PASS paged_bf16_split16_32q8kv_ctx100 n=4096 rc=OK violations=0 worst_scaled_err=0.00257739 chip_ns=103393 call_ns=175041 calls=1 unwritten=0 kv_staged=131072/458752 blocks=2/7 | mutants 0/0 
+PASS paged_bf16_batch_3seq_32q8kv_ctx40_0_100 n=12288 rc=OK violations=0 worst_scaled_err=0.00208243 chip_ns=209153 call_ns=238291 calls=2 unwritten=0 kv_staged=458752/458752 blocks=7/7 | mutants 4/4 KV_HEAD:CAUGHT(rc=OK,bad=8190) SLOT:CAUGHT(rc=OK,bad=8184) Q_ROW:CAUGHT(rc=OK,bad=8190) OUT_ROW:CAUGHT(rc=OK,bad=8190)
+PASS paged_bf16_shared_prefix_4seq_8q2kv_10pre n=4096 rc=OK violations=0 worst_scaled_err=0.00212011 chip_ns=105521 call_ns=256194 calls=1 unwritten=0 kv_staged=311296/802816 blocks=19/49 | mutants 2/2 KV_HEAD:CAUGHT(rc=OK,bad=4095) SLOT:CAUGHT(rc=OK,bad=4093)
+PASS paged_bf16_shared_prefix_4seq_32q8kv_10pre n=16384 rc=OK violations=0 worst_scaled_err=0.00198582 chip_ns=212802 call_ns=542661 calls=2 unwritten=0 kv_staged=1900544/3211264 blocks=29/49 | mutants 2/2 KV_HEAD:CAUGHT(rc=OK,bad=16379) SLOT:CAUGHT(rc=OK,bad=16365)
+mutant NO_MAX: caught 1 of 1
+mutant KV_HEAD: caught 12 of 12
+mutant SLOT: caught 12 of 12
+mutant NO_RESCALE: caught 6 of 6
+mutant Q_ROW: caught 8 of 8
+mutant OUT_ROW: caught 8 of 8
+device_opens=1
+  hd128 dominant token 5 (warp 0 of chunk 0): rc OK, 0 bad, worst 0
+  hd128 dominant token 40 (warp 1 of chunk 0): rc OK, 0 bad, worst 0
+  hd128 dominant token 70 (warp 2 of chunk 0): rc OK, 0 bad, worst 0
+  hd128 dominant token 100 (warp 3 of chunk 0): rc OK, 0 bad, worst 0
+  hd128 dominant token 127 (warp 3 of chunk 0): rc OK, 0 bad, worst 0
+  hd128 dominant token 131 (warp 0 of chunk 1): rc OK, 0 bad, worst 0
+  hd128 dominant token 299 (warp 1 of chunk 2): rc OK, 0 bad, worst 0
+PASS: 225 checks, 0 failed

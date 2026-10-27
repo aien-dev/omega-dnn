@@ -1,0 +1,13 @@
+5f8bdad9d5995e7a403ddcbc4b169be2b0468fa2e56b59372e6d8e34e31ee368  /home/drakestapleton/handoffs/OmegaDnn/GPU.md
+b9812d707c2455e72ab4a3425854bc1cdeef425f3f2d6ffbfb29e4fc0ee684ee  /tmp/OmegaDnn/gpu/bench/check.py
+0e0df1c63cbe860d56de1a5a40cc0e46eecc4b852ab678630224452d62f607fa  /tmp/OmegaDnn/gpu/bench/run_paired.py
+65f3ffe97095a0b233ee39c376a607779c217154f109c880450701491ed2fda0  /tmp/OmegaDnn/gpu/bench/torch_arm.py
+4c2a93601c510692ffd9ae45ccc32e9393f30880b7e8890548287eb67d2378ec  /tmp/OmegaDnn/gpu/bench/omega_dnn_bench.c
+a5b4628670aca36d41cc3c0edadda57db4120177234b8ea2963645e89c5723bd  /tmp/OmegaDnn/gpu/bench/gpu_run.sh
+f614d82f5f98657c1027715ff975617edafb191fa5f1910d0136db9a390650b8  /tmp/OmegaDnn/gpu/bench/held.sh
+72b779f26db037a5a0877dd773dac31cb1ad23e611a7e073b088f50f588493eb  /tmp/OmegaDnn/gpu/bench/omega_dnn_bench
+886646bd99a319e9c919f1db03d471442d98791784be85e5f223ba346b8e40b3  /tmp/OmegaDnn/gpu/omega-mv/build/libomega_gpu.a
+a40a91da23e6770cdc87c22b1ded983d2e6064c728ea7b9bc43c24a4f2e81746  /tmp/OmegaDnn/gpu/omega-mv/build/gpu_elementwise_test
+ab7964a4ba5c09abfeb661f0557416d22c9bd892fd8449f9f7e09af7bfb9a68f  /tmp/OmegaDnn/gpu/omega-mv/build/gpu_attention_test
+90a414cd449f0a2944b9b980667805077b7b15e66daf4b99dadc12eb341bc010  /tmp/OmegaDnn/gpu/bench/omega_dnn_bench.c
+bab3464d14857a2d1e895955dae6978f2e6a586c8ff45f88e44c353289b73868  /tmp/OmegaDnn/gpu/bench/omega_dnn_bench_spin

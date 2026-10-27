@@ -1,0 +1,26 @@
+rms_norm       cases=  50 worst_err/tol=1.990 violations=8229
+layer_norm     cases=  50 worst_err/tol=1.974 violations=8030
+softmax        cases=  50 worst_err/tol=1.983 violations=4570
+softmax_large  cases=  50 worst_err/tol=1.002 violations=1
+silu           cases=  50 worst_err/tol=1.998 violations=31198
+gelu_erf       cases=  50 worst_err/tol=1.989 violations=25206
+gelu_tanh      cases=  50 worst_err/tol=1.991 violations=24609
+relu           cases=  50 worst_err/tol=0.000 violations=0
+swiglu         cases=  50 worst_err/tol=1.998 violations=30295
+add            cases=  50 worst_err/tol=2.000 violations=28741
+mul            cases=  50 worst_err/tol=1.993 violations=30565
+bias           cases=  50 worst_err/tol=2.000 violations=3737
+rope           cases=  50 worst_err/tol=1.978 violations=5588
+rope_interleaved cases=  50 worst_err/tol=1.976 violations=5496
+matmul         cases=  50 worst_err/tol=1.989 violations=4081
+attention      cases=  50 worst_err/tol=1.996 violations=40981
+paged_decode   cases=  50 worst_err/tol=1.996 violations=3216
+conv2d_algo0   cases=  50 worst_err/tol=1.993 violations=6596
+conv2d_algo1   cases=  50 worst_err/tol=1.993 violations=6596
+maxpool        cases=  50 worst_err/tol=0.000 violations=0
+avgpool        cases=  50 worst_err/tol=2.000 violations=2697
+global_avgpool cases=  50 worst_err/tol=1.804 violations=70
+fused_mm_bias_swiglu cases=  50 worst_err/tol=1.994 violations=1334
+fusion_passes  cases=  50 worst_err/tol=0.000 violations=0
+TOTAL ops=24 violations=271836
+rc=1

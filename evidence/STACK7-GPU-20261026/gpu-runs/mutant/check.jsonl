@@ -1,0 +1,9 @@
+{"case": "rmsnorm_1x2048", "arm": "omega", "n": 2048, "max_abs": 1.0463501221781581, "max_rel": 0.41499672458480197, "rtol": 1e-05, "atol": 1e-06, "violations": 2048, "nonfinite": 0}
+{"case": "rmsnorm_64x2048", "arm": "omega", "n": 131072, "max_abs": 1.1510493200890521, "max_rel": 0.4402330274028913, "rtol": 1e-05, "atol": 1e-06, "violations": 131072, "nonfinite": 0}
+{"case": "rope_32x128", "arm": "omega", "n": 4096, "max_abs": 1.9711659423594696, "max_rel": 1.4518684602397094, "rtol": 1e-06, "atol": 1e-06, "violations": 2048, "nonfinite": 0}
+{"case": "swiglu_5632", "arm": "omega", "n": 5632, "max_abs": 5.407381506456285, "max_rel": 0.9497790228891604, "rtol": 1e-05, "atol": 1e-06, "violations": 5628, "nonfinite": 0}
+{"case": "swiglu_131072", "arm": "omega", "n": 131072, "max_abs": 5.421297444147994, "max_rel": 0.9501898990924272, "rtol": 1e-05, "atol": 1e-06, "violations": 131004, "nonfinite": 0}
+{"case": "gqa_f32_32q8kv_hd128_ctx2048", "arm": "omega", "n": 4096, "max_abs": 0.09116044633431741, "max_rel": 1.1799539179683023, "rtol": 0.0002, "atol": 2e-05, "violations": 4089, "nonfinite": 0}
+{"case": "gqa_f32_32q4kv_hd64_ctx2048", "arm": "omega", "n": 2048, "max_abs": 0.06961602013324586, "max_rel": 1.7517398437193608, "rtol": 0.0002, "atol": 2e-05, "violations": 2046, "nonfinite": 0}
+{"case": "gqa_rows_f32_32q8kv_hd128_m256", "arm": "omega", "n": 1048576, "max_abs": 1.96320378780365, "max_rel": 1.9652419811768818, "rtol": 0.0002, "atol": 2e-05, "violations": 1048265, "nonfinite": 0}
+{"case": "paged_bf16_32q8kv_hd128_ctx2048_bs16", "arm": "omega", "n": 4096, "max_abs": 0.07354696002634531, "max_rel": 0.9293711491871574, "rtol": 0.0002, "atol": 2e-05, "violations": 4088, "nonfinite": 0}

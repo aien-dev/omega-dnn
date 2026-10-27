@@ -1,0 +1,12 @@
+{"round": -1, "arm": "torch", "rc": 0, "wall_s": 3.181, "lock_held_s": "3.176894679", "load_before": ["34.38", "23.86", "18.12"], "load_after": ["34.38", "23.86", "18.12"], "compute_apps_after": ""}
+{"round": -1, "arm": "omega", "rc": 0, "wall_s": 0.763, "lock_held_s": ".758649163", "load_before": ["34.38", "23.86", "18.12"], "load_after": ["33.15", "23.78", "18.12"], "compute_apps_after": ""}
+{"round": 0, "arm": "torch", "rc": 0, "wall_s": 3.495, "lock_held_s": "3.490689865", "load_before": ["33.15", "23.78", "18.12"], "load_after": ["33.15", "23.78", "18.12"], "compute_apps_after": ""}
+{"round": 0, "arm": "omega", "rc": 0, "wall_s": 0.809, "lock_held_s": ".804653101", "load_before": ["33.15", "23.78", "18.12"], "load_after": ["31.46", "23.58", "18.09"], "compute_apps_after": ""}
+{"round": 1, "arm": "torch", "rc": 0, "wall_s": 3.419, "lock_held_s": "3.414120252", "load_before": ["31.46", "23.58", "18.09"], "load_after": ["31.46", "23.58", "18.09"], "compute_apps_after": ""}
+{"round": 1, "arm": "omega", "rc": 0, "wall_s": 0.951, "lock_held_s": ".945308408", "load_before": ["31.46", "23.58", "18.09"], "load_after": ["31.46", "23.58", "18.09"], "compute_apps_after": ""}
+{"round": 2, "arm": "omega", "rc": 0, "wall_s": 1.131, "lock_held_s": "1.127103514", "load_before": ["31.46", "23.58", "18.09"], "load_after": ["30.30", "23.48", "18.08"], "compute_apps_after": ""}
+{"round": 2, "arm": "torch", "rc": 0, "wall_s": 2.864, "lock_held_s": "2.859327892", "load_before": ["30.30", "23.48", "18.08"], "load_after": ["30.30", "23.48", "18.08"], "compute_apps_after": ""}
+{"round": 3, "arm": "omega", "rc": 0, "wall_s": 0.744, "lock_held_s": ".738672861", "load_before": ["30.30", "23.48", "18.08"], "load_after": ["30.30", "23.48", "18.08"], "compute_apps_after": ""}
+{"round": 3, "arm": "torch", "rc": 0, "wall_s": 3.037, "lock_held_s": "3.031847749", "load_before": ["30.30", "23.48", "18.08"], "load_after": ["28.91", "23.30", "18.05"], "compute_apps_after": ""}
+{"round": 4, "arm": "torch", "rc": 0, "wall_s": 3.531, "lock_held_s": "3.526034268", "load_before": ["28.91", "23.30", "18.05"], "load_after": ["28.04", "23.21", "18.05"], "compute_apps_after": ""}
+{"round": 4, "arm": "omega", "rc": 0, "wall_s": 0.665, "lock_held_s": ".659534699", "load_before": ["28.04", "23.21", "18.05"], "load_after": ["28.04", "23.21", "18.05"], "compute_apps_after": ""}
