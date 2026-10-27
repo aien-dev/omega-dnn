@@ -26,7 +26,7 @@ and the seeded OM-1 compiler `evidence/SEED-0/omc/omc.elf`, sha256 `734f0a39…6
 
 ```sh
 sh tools/build.sh                  # fetches the pins into .deps/, checks both compiler hashes, binds
-python -m pytest -q tests          # needs torch (CPU); compares against torch float64
+python tests/test_ops.py 200       # needs torch (CPU); randomized, compares against torch float64
 python tests/mutants.py            # each mutant of om/dnn.om must fail the suite
 ```
 

@@ -20,5 +20,7 @@ chmod +x "$OMC1" "$OMC2"
 check() { got=$(sha256sum < "$1" | cut -d' ' -f1); [ "$got" = "$2" ] || { echo "build.sh: $1 sha256 $got, pinned $2" >&2; exit 1; }; }
 check "$OMC1" "$OMC1_SHA256"
 check "$OMC2" "$OMC2_SHA256"
-"$OMC2" < "$ROOT/om/dnn.om" > /dev/null
-OMEGA_NATIVE_OMC=$OMC1 OMEGA_NATIVE_OMC2=$OMC2 "$OMEGA_BRIDGE/tools/native" "$ROOT/build" "$ROOT/om/dnn.om"
+SRC=${OMEGA_DNN_SRC:-$ROOT/om/dnn.om}
+OUT=${OMEGA_DNN_OUT:-$ROOT/build}
+"$OMC2" < "$SRC" > /dev/null
+OMEGA_NATIVE_OMC=$OMC1 OMEGA_NATIVE_OMC2=$OMC2 "$OMEGA_BRIDGE/tools/native" "$OUT" "$SRC"
