@@ -1,0 +1,32 @@
+{
+  "project_name": "omega-dnn",
+  "parent": "aien-dev/omega-mv",
+  "goals": [
+    {
+      "id": "goal-cpu",
+      "title": "DL primitives in seeded Omega on AArch64",
+      "description": "Every operator checked against PyTorch float64 over randomized shapes with Wolfram-derived tolerances and a mutant the check catches; perf against PyTorch CPU (oneDNN) on Spark cores 8-9.",
+      "status": "Active",
+      "milestones": [
+        {"id": 1, "description": "om/dnn.om compiles with the pinned OM-2 omc and binds through omega-bridge ABI v2", "completed": true},
+        {"id": 2, "description": "Randomized correctness suite and mutants green in CI (ubuntu-24.04-arm)", "completed": false},
+        {"id": 3, "description": "Interleaved A/B against torch CPU with load and IQR", "completed": false}
+      ],
+      "created_at": "2026-10-27T01:33:23Z",
+      "updated_at": "2026-10-27T01:33:23Z"
+    },
+    {
+      "id": "goal-gpu",
+      "title": "GB10 and SPIR-V backends",
+      "description": "GPU rows against cuDNN (interim C SASS codegen today); SPIR-V blocked on IR-mode floats and memory in omega-mv.",
+      "status": "Proposed",
+      "milestones": [
+        {"id": 1, "description": "GB10 rows against cuDNN recorded (docs/GPU.md)", "completed": true},
+        {"id": 2, "description": "Kernels emitted from .om instead of C codegen", "completed": false},
+        {"id": 3, "description": "SPIR-V backend after the IR-mode f32/f64 and buffer ABI extension", "completed": false}
+      ],
+      "created_at": "2026-10-27T01:33:23Z",
+      "updated_at": "2026-10-27T01:33:23Z"
+    }
+  ]
+}

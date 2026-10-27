@@ -1,0 +1,881 @@
+note omega-dnn om/dnn.om: deep-learning primitives in seeded Omega (OM-2), ONNX operator semantics.
+note One export runs a node list (a small fusion graph) over one f32 arena; see docs/DESCRIPTOR.md.
+note Tensors are f32 bit patterns in a uint arena; integer side inputs (position ids, block tables,
+note sequence lengths) are uint32 values in the same arena. All arithmetic runs in f64 and each
+note stored element is rounded once to f32 (docs/TOLERANCE.md derives the bounds).
+note The compiler has 16 registers per function and no spilling, so kernels keep their parameters
+note in a 32-word array p (words 0..15 the node, 16..31 derived values) and split work into helpers.
+note bridge c-type dsc omega_dnn_desc
+note bridge c-define OMEGA_DNN_MAGIC 5194830
+om2
+layout dsc 4096
+field a ulong 512 at 0 little
+end
+const MAGIC ulong 0x4f444e
+const NONE ulong 0xffffffffffffffff
+const NB ulong 4
+const NW ulong 16
+const CH ulong 65536
+fn ldf ws edit uint * i ulong to f64 inline
+ret f64 bitcast f32 get ws i
+end
+note ldfo: outlined ldf for callers whose register budget cannot absorb the inline body.
+fn ldfo ws edit uint * i ulong to f64
+ret f64 bitcast f32 get ws i
+end
+fn stf ws edit uint * i ulong v f64 to void inline
+put ws i bitcast uint f32 v
+end
+fn arg d view dsc i ulong k ulong to ulong
+ret get d a add add NB mul i NW k
+end
+fn ldp d view dsc i ulong p edit ulong 32 to void
+for k ulong 16
+put p k arg d i k
+end
+end
+fn pf p edit ulong 32 k ulong to f64 inline
+ret bitcast f64 get p k
+end
+fn minu x ulong y ulong to ulong
+if lt x y
+ret x
+end
+ret y
+end
+note exp(x) in f64: Cody-Waite reduction by ln2 (hi + lo), degree-13 Taylor (remainder 5.9e-18),
+note scale by 2^n built from the exponent bits. Below -708 gives 0; above 709 is clamped.
+fn fexp x f64 to f64
+if ne x x
+ret x
+end
+if lt x -708.0f64
+ret 0.0f64
+end
+y = fmin x 709.0f64
+t = mul y 1.4426950408889634f64
+n = long 0
+if ge t 0.0f64
+n = long add t 0.5f64
+else
+n = long sub t 0.5f64
+end
+t = f64 n
+y = sub sub y mul t 0.6931471805599453f64 mul t 2.3190468138462996e-17f64
+t = 1.0f64
+for j ulong 13
+t = add 1.0f64 div mul y t f64 sub 13 j
+end
+ret mul t bitcast f64 shl ulong add n 1023 52
+end
+fn ftanh z f64 to f64
+q = fabs z
+e = fexp mul -2.0f64 q
+t = div sub 1.0f64 e add 1.0f64 e
+if lt z 0.0f64
+ret neg t
+end
+ret t
+end
+note erf(x) = 2/sqrt(pi) exp(-x^2) sum (2x^2)^n x / (1*3*...*(2n+1)), all terms positive;
+note |x| >= 6 gives +-1 (erfc(6) = 2.2e-17).
+fn ferf x f64 to f64
+q = fabs x
+s = 1.0f64
+if lt q 6.0f64
+q2 = mul q q
+tm = q
+sm = q
+for k ulong 400
+tm = div mul tm mul 2.0f64 q2 f64 add mul 2 k 3
+sm = add sm tm
+if lt tm mul sm 1.0e-17f64
+break
+end
+end
+s = mul mul 1.1283791670955126f64 fexp neg q2 sm
+end
+if lt x 0.0f64
+ret neg s
+end
+ret s
+end
+fn fsilu v f64 to f64
+ret div v add 1.0f64 fexp neg v
+end
+fn fgelu v f64 ap ulong to f64
+if eq ap 1
+u = mul 0.7978845608028654f64 add v mul 0.044715f64 mul v mul v v
+ret mul mul 0.5f64 v add 1.0f64 ftanh u
+end
+ret mul mul 0.5f64 v add 1.0f64 ferf mul v 0.7071067811865475f64
+end
+note elementwise ops: 5 silu, 6 gelu (arg 6: 0 erf, 1 tanh), 7 swiglu silu(a)*b, 8 add, 9 mul,
+note 10 bias b[x mod cols] (arg 5 cols), 11 relu. v is the value of input a at flat index x.
+fn isew op ulong to ulong
+if lt op 5
+ret 0
+end
+if gt op 11
+ret 0
+end
+ret 1
+end
+fn ewap ws edit uint * d view dsc i ulong v f64 x ulong to f64
+op = arg d i 0
+if eq op 5
+ret fsilu v
+end
+if eq op 6
+ret fgelu v arg d i 6
+end
+if eq op 7
+ret mul fsilu v ldf ws add arg d i 2 x
+end
+if eq op 8
+ret add v ldf ws add arg d i 2 x
+end
+if eq op 9
+ret mul v ldf ws add arg d i 2 x
+end
+if eq op 10
+ret add v ldf ws add arg d i 2 rem x arg d i 5
+end
+if eq op 11
+ret fmax v 0.0f64
+end
+trap 2
+end
+note emit: the producer node i (ie >> 8) made value v at flat index x; apply the fused
+note elementwise nodes i+1 .. e (ie & 255) in f64 and store once into node e's output.
+fn emit ws edit uint * d view dsc ie ulong x ulong v f64 to void
+e = and ie 255
+j = add shr ie 8 1
+while le j e bound 64
+v = ewap ws d j v x
+j = add j 1
+end
+stf ws add arg d e 3 x v
+end
+fn ew1 ws edit uint * d view dsc ie ulong x ulong to void
+i = shr ie 8
+emit ws d ie x ewap ws d i ldf ws add arg d i 1 x x
+end
+fn k_ew ws edit uint * d view dsc ie ulong to void
+n = arg d shr ie 8 4
+for c ulong add div n CH 1
+o = mul c CH
+if ge o n
+break
+end
+for t ulong minu sub n o CH
+ew1 ws d ie add o t
+end
+end
+end
+note RMSNormalization (ONNX opset 23, axis -1): y = x / sqrt(mean(x^2) + eps) * scale.
+fn rmsrow ws edit uint * d view dsc ie ulong p edit ulong 32 r ulong to void
+b = mul r get p 5
+s = 0.0f64
+for c ulong get p 5
+v = ldfo ws add get p 1 add b c
+s = add s mul v v
+end
+s = fsqrt add div s f64 get p 5 pf p 6
+for c ulong get p 5
+v = mul div ldfo ws add get p 1 add b c s ldfo ws add get p 2 c
+emit ws d ie add b c v
+end
+end
+fn k_rms ws edit uint * d view dsc ie ulong to void
+p = new ulong 32 0
+ldp d shr ie 8 p
+for r ulong get p 4
+rmsrow ws d ie p r
+end
+end
+note LayerNormalization (ONNX, axis -1): (x - mean) / sqrt(var + eps) * scale + bias (arg 7, NONE = none).
+fn lnrow ws edit uint * d view dsc ie ulong p edit ulong 32 r ulong to void
+b = add get p 1 mul r get p 5
+s = 0.0f64
+for c ulong get p 5
+s = add s ldfo ws add b c
+end
+s = div s f64 get p 5
+q = 0.0f64
+for c ulong get p 5
+v = sub ldfo ws add b c s
+q = add q mul v v
+end
+q = fsqrt add div q f64 get p 5 pf p 6
+for c ulong get p 5
+v = div sub ldfo ws add b c s q
+v = mul v ldfo ws add get p 2 c
+if ne get p 7 NONE
+v = add v ldfo ws add get p 7 c
+end
+emit ws d ie add mul r get p 5 c v
+end
+end
+fn k_ln ws edit uint * d view dsc ie ulong to void
+p = new ulong 32 0
+ldp d shr ie 8 p
+for r ulong get p 4
+lnrow ws d ie p r
+end
+end
+note Softmax (ONNX opset 13, axis -1), max-subtracted.
+fn smrow ws edit uint * d view dsc ie ulong p edit ulong 32 r ulong to void
+b = add get p 1 mul r get p 5
+m = ldfo ws b
+for c ulong get p 5
+m = fmax m ldfo ws add b c
+end
+s = 0.0f64
+for c ulong get p 5
+s = add s fexp sub ldfo ws add b c m
+end
+for c ulong get p 5
+v = div fexp sub ldfo ws add b c m s
+emit ws d ie add mul r get p 5 c v
+end
+end
+fn k_smax ws edit uint * d view dsc ie ulong to void
+p = new ulong 32 0
+ldp d shr ie 8 p
+for r ulong get p 4
+smrow ws d ie p r
+end
+end
+note RotaryEmbedding (ONNX opset 23): x [B,H,S,D] (arg 1), cos (2) / sin (4) caches [maxpos, rot/2],
+note position ids (5) [B,S] uint32, B 6, H 7, S 8, D 9, rot 10 (0 = D), interleaved 11.
+note p 16 = rot, 17 = rot/2, 18 = pair step (1 interleaved, rot/2 split), 19 = first-index stride
+note (2 interleaved, 1 split), 20 = row base, 21 = cache row base.
+fn ropepr ws edit uint * d view dsc ie ulong p edit ulong 32 k ulong to void
+i1 = add get p 20 mul k get p 19
+cs = ldfo ws add get p 2 add get p 21 k
+sn = ldfo ws add get p 4 add get p 21 k
+x1 = ldfo ws add get p 1 i1
+x2 = ldfo ws add get p 1 add i1 get p 18
+y = sub mul x1 cs mul x2 sn
+emit ws d ie i1 y
+y = add mul x2 cs mul x1 sn
+emit ws d ie add i1 get p 18 y
+end
+fn roperow ws edit uint * d view dsc ie ulong p edit ulong 32 r ulong to void
+s = rem r get p 8
+b = div r mul get p 7 get p 8
+put p 20 mul r get p 9
+put p 21 mul ulong get ws add get p 5 add mul b get p 8 s get p 17
+for k ulong get p 17
+ropepr ws d ie p k
+end
+for k ulong sub get p 9 get p 16
+s = add get p 20 add get p 16 k
+emit ws d ie s ldfo ws add get p 1 s
+end
+end
+fn k_rope ws edit uint * d view dsc ie ulong to void
+p = new ulong 32 0
+ldp d shr ie 8 p
+put p 16 get p 10
+if eq get p 16 0
+put p 16 get p 9
+end
+put p 17 div get p 16 2
+put p 18 get p 17
+put p 19 1
+if eq get p 11 1
+put p 18 1
+put p 19 2
+end
+for r ulong mul mul get p 6 get p 7 get p 8
+roperow ws d ie p r
+end
+end
+note Leaf loops (the register budget allows one loop with a few names per function).
+note vdot: sum of ws[a+u] * ws[b+u*sb], u < n.
+fn vdot ws edit uint * a ulong b ulong sb ulong n ulong to f64
+s = 0.0f64
+for u ulong n
+s = add s mul ldf ws add a u ldf ws add b mul u sb
+end
+ret s
+end
+note vacc: acc[t] += av * ws[rb+t], t < nj.
+fn vacc ws edit uint * acc edit f64 64 av f64 rb ulong nj ulong to void
+for t ulong nj
+put acc t add get acc t mul av ldf ws add rb t
+end
+end
+note MatMul [M,K] x [K,N] (arg 8 = 1: B given as [N,K]), optional bias [N] (arg 7). Interim GEMM
+note until aien-dev/omega-blas publishes its sgemm; f64 accumulation, 64-column blocks.
+note p 20 = m, 21 = j0, 22 = columns in the block, 23 = row offset of a.
+fn mmacc ws edit uint * p edit ulong 32 acc edit f64 64 to void
+for t ulong get p 22
+put acc t 0.0f64
+end
+if eq get p 8 0
+for k ulong get p 6
+vacc ws acc ldf ws add get p 23 k add get p 2 add mul k get p 5 get p 21 get p 22
+end
+ret
+end
+for t ulong get p 22
+put acc t vdot ws get p 23 add get p 2 mul add get p 21 t get p 6 1 get p 6
+end
+end
+fn mmblk ws edit uint * d view dsc ie ulong p edit ulong 32 acc edit f64 64 to void
+mmacc ws p acc
+for t ulong get p 22
+av = get acc t
+if ne get p 7 NONE
+av = add av ldfo ws add get p 7 add get p 21 t
+end
+emit ws d ie add mul get p 20 get p 5 add get p 21 t av
+end
+end
+fn mmrow ws edit uint * d view dsc ie ulong p edit ulong 32 to void
+acc = new f64 64 0.0
+for jb ulong add div get p 5 64 1
+put p 21 mul jb 64
+if ge get p 21 get p 5
+break
+end
+put p 22 minu sub get p 5 get p 21 64
+mmblk ws d ie p acc
+end
+end
+fn k_mm ws edit uint * d view dsc ie ulong to void
+p = new ulong 32 0
+ldp d shr ie 8 p
+for m ulong get p 4
+put p 20 m
+put p 23 add get p 1 mul m get p 6
+mmrow ws d ie p
+end
+end
+note Attention core shared by prefill and paged decode. st (f64): 0..511 scaled q row,
+note 512..1023 output accumulator, 1024..1087 block scores, 1088 running max, 1089 running sum.
+note p 22 = head dim, 24 = first key row, 25 = first value row, 26 = row stride, 27 = rows in
+note block, 28 = scale (f64 bits), 29..31 per-row values of the caller.
+fn adot ws edit uint * p edit ulong 32 st edit f64 1090 t ulong to f64
+kr = add get p 24 mul t get p 26
+s = 0.0f64
+for u ulong get p 22
+s = add s mul get st u ldf ws add kr u
+end
+ret s
+end
+fn aaxpy ws edit uint * p edit ulong 32 st edit f64 1090 vr ulong pv f64 to void
+for u ulong get p 22
+i = add 512 u
+put st i add get st i mul pv ldf ws add vr u
+end
+end
+fn ascl p edit ulong 32 st edit f64 1090 s f64 to void
+for u ulong get p 22
+put st add 512 u mul get st add 512 u s
+end
+end
+fn ablk ws edit uint * p edit ulong 32 st edit f64 1090 to void
+bm = -1.0e300f64
+for t ulong get p 27
+s = adot ws p st t
+put st add 1024 t s
+bm = fmax bm s
+end
+bm = fmax get st 1088 bm
+s = fexp sub get st 1088 bm
+put st 1089 mul get st 1089 s
+ascl p st s
+for t ulong get p 27
+s = fexp sub get st add 1024 t bm
+put st 1089 add get st 1089 s
+aaxpy ws p st add get p 25 mul t get p 26 s
+end
+put st 1088 bm
+end
+fn ainit ws edit uint * p edit ulong 32 st edit f64 1090 qr ulong to void
+for u ulong get p 22
+put st u mul ldf ws add get p 1 add qr u pf p 28
+put st add 512 u 0.0f64
+end
+put st 1088 -1.0e300f64
+put st 1089 0.0f64
+end
+fn aout ws edit uint * d view dsc ie ulong st edit f64 1090 qr ulong to void
+for u ulong arg d shr ie 8 10
+emit ws d ie add qr u div get st add 512 u get st 1089
+end
+end
+note Attention prefill (ONNX Attention opset 23, 4-D): q (1) [B,Hq,Sq,D], k (2) / v (4) [B,Hkv,Skv,D],
+note o (3) [B,Hq,Sq,D]; B 5, Hq 6, Hkv 7, Sq 8, Skv 9, D 10, causal 11 (top-left: key j <= query i),
+note scale 12 (f64 bits), key block 13 (1..64, 0 = 64). Flash-style online softmax per key block.
+note p 29 = k/v head base, 30 = keys visible to this query.
+fn aprep p edit ulong 32 r ulong to void
+hk = div rem div r get p 8 get p 6 div get p 6 get p 7
+put p 29 mul mul add mul div div r get p 8 get p 6 get p 7 hk get p 9 get p 10
+put p 30 get p 9
+if eq get p 11 1
+put p 30 minu add rem r get p 8 1 get p 9
+end
+end
+fn aprblk ws edit uint * p edit ulong 32 st edit f64 1090 kk ulong to void
+j0 = mul kk get p 13
+put p 24 add get p 2 add get p 29 mul j0 get p 10
+put p 25 add get p 4 add get p 29 mul j0 get p 10
+put p 27 minu sub get p 30 j0 get p 13
+ablk ws p st
+end
+fn arow ws edit uint * d view dsc ie ulong p edit ulong 32 r ulong to void
+st = new f64 1090 0.0
+aprep p r
+ainit ws p st mul r get p 10
+for kk ulong div add get p 30 sub get p 13 1 get p 13
+aprblk ws p st kk
+end
+aout ws d ie st mul r get p 10
+end
+fn k_attn ws edit uint * d view dsc ie ulong to void
+p = new ulong 32 0
+ldp d shr ie 8 p
+if gt get p 10 512
+trap 2
+end
+if eq get p 13 0
+put p 13 64
+end
+if gt get p 13 64
+trap 2
+end
+put p 22 get p 10
+put p 26 get p 10
+put p 28 get p 12
+for r ulong mul mul get p 5 get p 6 get p 8
+arow ws d ie p r
+end
+end
+note Paged-KV decode attention: q (1) [B,Hq,D]; k (2) / v (4) caches [nblocks, bs, Hkv, D];
+note block table (5) [B, maxb] and lengths (6) [B] uint32; o (3) [B,Hq,D]; B 7, Hq 8, Hkv 9,
+note D 10, bs 11 (1..64), maxb 12, scale 13 (f64 bits). One key block per cache page.
+note p 29 = sequence, 30 = kv head, 31 = length.
+fn dpage ws edit uint * p edit ulong 32 pg ulong to void
+kr = ulong get ws add get p 5 add mul get p 29 get p 12 pg
+kr = mul add mul mul kr get p 11 get p 9 get p 30 get p 10
+put p 24 add get p 2 kr
+put p 25 add get p 4 kr
+put p 27 minu sub get p 31 mul pg get p 11 get p 11
+end
+fn drow ws edit uint * d view dsc ie ulong p edit ulong 32 r ulong to void
+st = new f64 1090 0.0
+put p 29 div r get p 8
+put p 30 div rem r get p 8 div get p 8 get p 9
+put p 31 ulong get ws add get p 6 get p 29
+ainit ws p st mul r get p 10
+for pg ulong div add get p 31 sub get p 11 1 get p 11
+dpage ws p pg
+ablk ws p st
+end
+aout ws d ie st mul r get p 10
+end
+fn k_dec ws edit uint * d view dsc ie ulong to void
+p = new ulong 32 0
+ldp d shr ie 8 p
+if gt get p 10 512
+trap 2
+end
+if gt get p 11 64
+trap 2
+end
+put p 22 get p 10
+put p 26 mul get p 9 get p 10
+put p 28 get p 13
+for r ulong mul get p 7 get p 8
+drow ws d ie p r
+end
+end
+note Conv (ONNX, 2-D, NCHW): x (1) [N,C,H,W], w (2) [O,C/g,kh,kw], y (3) [N,O,OH,OW], bias (4) [O]
+note or NONE, scratch (5), N 6, C 7, H 8, W 9, O 10, arg 11 packs kh kw sh sw ph pw dh dw one byte
+note each from the low byte (symmetric pads), groups 12, algorithm 13 (0 direct, 1 im2col + GEMM).
+note p 16..23 = kh kw sh sw ph pw dh dw, 24 = OH, 25 = OW, 26 = C/g, 27 = O/g, 28 = C/g*kh*kw,
+note 29 = OH*OW; 14, 15, 30, 31 are per-call values noted at each helper.
+fn odim h ulong k ulong s ulong q ulong dl ulong to ulong
+ret add div sub add h mul 2 q add mul dl sub k 1 1 s 1
+end
+fn cvprep d view dsc ie ulong p edit ulong 32 to void
+ldp d shr ie 8 p
+for k ulong 8
+put p add 16 k and shr get p 11 mul 8 k 255
+end
+put p 24 odim get p 8 get p 16 get p 18 get p 20 get p 22
+put p 25 odim get p 9 get p 17 get p 19 get p 21 get p 23
+put p 26 div get p 7 get p 12
+put p 27 div get p 10 get p 12
+put p 28 mul mul get p 26 get p 16 get p 17
+put p 29 mul get p 24 get p 25
+end
+note cvrow: one kernel row; xr = input row start, wr = weight row start, p 15 = x*sw (padded column).
+fn cvrow ws edit uint * p edit ulong 32 xr ulong wr ulong to f64
+s = 0.0f64
+for kj ulong get p 17
+cc = add get p 15 mul kj get p 23
+if lt cc get p 21
+continue
+end
+cc = sub cc get p 21
+if ge cc get p 9
+continue
+end
+s = add s mul ldf ws add xr cc ldf ws add wr kj
+end
+ret s
+end
+note cvch: input channel c of the group; p 31 = input group base, p 13 = weight base of o,
+note p 14 = y*sh (padded row).
+fn cvch ws edit uint * p edit ulong 32 c ulong to f64
+xb = add get p 31 mul mul c get p 8 get p 9
+wb = add get p 13 mul mul c get p 16 get p 17
+s = 0.0f64
+for ki ulong get p 16
+r = add get p 14 mul ki get p 22
+if lt r get p 20
+continue
+end
+r = sub r get p 20
+if ge r get p 8
+continue
+end
+r = add xb mul r get p 9
+c = add wb mul ki get p 17
+s = add s cvrow ws p r c
+end
+ret s
+end
+note cvbase: p 30 = n*O + o; sets p 31 (input group base) and p 13 (weight base of o).
+fn cvbase p edit ulong 32 no ulong to void
+put p 30 no
+o = rem no get p 10
+g = div o get p 27
+n = div no get p 10
+n = add mul n get p 7 mul g get p 26
+put p 31 add get p 1 mul n mul get p 8 get p 9
+put p 13 add get p 2 mul o mul get p 26 mul get p 16 get p 17
+end
+fn cvpt ws edit uint * p edit ulong 32 q ulong to f64
+put p 14 mul div q get p 25 get p 18
+put p 15 mul rem q get p 25 get p 19
+s = 0.0f64
+for c ulong get p 26
+s = add s cvch ws p c
+end
+if ne get p 4 NONE
+s = add s ldf ws add get p 4 rem get p 30 get p 10
+end
+ret s
+end
+fn cvplane ws edit uint * d view dsc ie ulong p edit ulong 32 to void
+for q ulong get p 29
+s = cvpt ws p q
+emit ws d ie add mul get p 30 get p 29 q s
+end
+end
+fn cvdir ws edit uint * d view dsc ie ulong p edit ulong 32 to void
+for no ulong mul get p 6 get p 10
+cvbase p no
+cvplane ws d ie p
+end
+end
+note cvcrow: column-matrix row rr, output row y; p 14 = image/channel base, p 15 = column row base,
+note p 31 = ki*dh (im2col: p 30 = n*groups + g).
+fn cvcrow ws edit uint * p edit ulong 32 rr ulong y ulong to void
+r = add mul y get p 18 get p 31
+if lt r get p 20
+r = NONE
+else
+r = sub r get p 20
+if lt r get p 8
+r = add get p 14 mul r get p 9
+else
+r = NONE
+end
+end
+o = add get p 15 mul y get p 25
+rr = mul rem rr get p 17 get p 23
+for x ulong get p 25
+cc = add mul x get p 19 rr
+v = uint 0
+if ne r NONE
+if ge cc get p 21
+cc = sub cc get p 21
+if lt cc get p 9
+v = get ws add r cc
+end
+end
+end
+put ws add o x v
+end
+end
+fn cvcol ws edit uint * p edit ulong 32 rr ulong to void
+c = div rr mul get p 16 get p 17
+c = add mul rem get p 30 get p 12 get p 26 c
+c = add mul div get p 30 get p 12 get p 7 c
+put p 14 add get p 1 mul c mul get p 8 get p 9
+put p 15 add get p 5 mul rr get p 29
+put p 31 mul rem div rr get p 17 get p 16 get p 22
+for y ulong get p 24
+cvcrow ws p rr y
+end
+end
+note cvacc: acc[t] = sum over r of w[o, r] * col[r, p 13 + t]; output channel p 31.
+fn cvacc ws edit uint * p edit ulong 32 acc edit f64 64 nj ulong to void
+for r ulong get p 28
+av = ldfo ws add get p 2 add mul get p 31 get p 28 r
+rb = add get p 5 add mul r get p 29 get p 13
+vacc ws acc av rb nj
+end
+end
+note cvmm: output channel p 31, output base p 14, bias value p 15 (f64 bits), positions p 13 .. +64.
+fn cvmm ws edit uint * d view dsc ie ulong p edit ulong 32 to void
+acc = new f64 64 0.0
+nj = minu sub get p 29 get p 13 64
+cvacc ws p acc nj
+for t ulong nj
+av = add get acc t pf p 15
+emit ws d ie add get p 14 add get p 13 t av
+end
+end
+fn cvoch ws edit uint * d view dsc ie ulong p edit ulong 32 o ulong to void
+o = add mul rem get p 30 get p 12 get p 27 o
+put p 31 o
+o = add mul div get p 30 get p 12 get p 10 o
+put p 14 mul o get p 29
+put p 15 bitcast ulong 0.0f64
+if ne get p 4 NONE
+put p 15 bitcast ulong ldf ws add get p 4 get p 31
+end
+for pb ulong add div get p 29 64 1
+put p 13 mul pb 64
+if ge get p 13 get p 29
+break
+end
+cvmm ws d ie p
+end
+end
+fn cvgrp ws edit uint * d view dsc ie ulong p edit ulong 32 to void
+for rr ulong get p 28
+cvcol ws p rr
+end
+for o ulong get p 27
+cvoch ws d ie p o
+end
+end
+fn k_conv ws edit uint * d view dsc ie ulong to void
+p = new ulong 32 0
+cvprep d ie p
+if eq get p 13 1
+for ng ulong mul get p 6 get p 12
+put p 30 ng
+cvgrp ws d ie p
+end
+ret
+end
+cvdir ws d ie p
+end
+note MaxPool (16) / AveragePool (17) (ONNX, 2-D, NCHW): x 1, y 3, N*C 4, H 5, W 6, arg 7 packs
+note kh kw sh sw ph pw; average divides by the in-bounds count unless arg 8 (count_include_pad) is 1.
+note p 16..21 = kh kw sh sw ph pw, 24 = OH, 25 = OW, 26 = y*sh, 27 = x*sw, 28 = plane base,
+note 29 = running value (f64 bits), 30 = in-bounds count.
+fn plrow ws edit uint * p edit ulong 32 r ulong to void
+s = pf p 29
+for kj ulong get p 17
+cc = add get p 27 kj
+if lt cc get p 21
+continue
+end
+cc = sub cc get p 21
+if ge cc get p 6
+continue
+end
+v = ldfo ws add get p 28 add mul r get p 6 cc
+if eq get p 0 16
+s = fmax s v
+else
+s = add s v
+end
+put p 30 add get p 30 1
+end
+put p 29 bitcast ulong s
+end
+fn plval ws edit uint * p edit ulong 32 q ulong to f64
+put p 26 mul div rem q mul get p 24 get p 25 get p 25 get p 18
+put p 27 mul rem q get p 25 get p 19
+put p 28 add get p 1 mul div q mul get p 24 get p 25 mul get p 5 get p 6
+put p 29 bitcast ulong 0.0f64
+if eq get p 0 16
+put p 29 bitcast ulong -1.0e300f64
+end
+put p 30 0
+for ki ulong get p 16
+r = add get p 26 ki
+if lt r get p 20
+continue
+end
+r = sub r get p 20
+if ge r get p 5
+continue
+end
+plrow ws p r
+end
+s = pf p 29
+if eq get p 0 17
+if eq get p 8 1
+put p 30 mul get p 16 get p 17
+end
+s = div s f64 get p 30
+end
+ret s
+end
+fn k_pool ws edit uint * d view dsc ie ulong to void
+p = new ulong 32 0
+ldp d shr ie 8 p
+for k ulong 6
+put p add 16 k and shr get p 7 mul 8 k 255
+end
+put p 24 odim get p 5 get p 16 get p 18 get p 20 1
+put p 25 odim get p 6 get p 17 get p 19 get p 21 1
+for q ulong mul get p 4 mul get p 24 get p 25
+emit ws d ie q plval ws p q
+end
+end
+note GlobalAveragePool: x 1, y 3, N*C 4, H*W 5.
+fn k_gap ws edit uint * d view dsc ie ulong to void
+p = new ulong 32 0
+ldp d shr ie 8 p
+for n ulong get p 4
+emit ws d ie n div vdot1 ws add get p 1 mul n get p 5 get p 5 f64 get p 5
+end
+end
+fn vdot1 ws edit uint * a ulong n ulong to f64
+s = 0.0f64
+for u ulong n
+s = add s ldf ws add a u
+end
+ret s
+end
+fn run1 ws edit uint * d view dsc ie ulong to void
+op = arg d shr ie 8 0
+if eq isew op 1
+k_ew ws d ie
+ret
+end
+if eq op 1
+k_rms ws d ie
+ret
+end
+if eq op 2
+k_ln ws d ie
+ret
+end
+if eq op 3
+k_smax ws d ie
+ret
+end
+if eq op 4
+k_rope ws d ie
+ret
+end
+if eq op 12
+k_mm ws d ie
+ret
+end
+if eq op 13
+k_attn ws d ie
+ret
+end
+if eq op 14
+k_dec ws d ie
+ret
+end
+if eq op 15
+k_conv ws d ie
+ret
+end
+if eq op 16
+k_pool ws d ie
+ret
+end
+if eq op 17
+k_pool ws d ie
+ret
+end
+if eq op 18
+k_gap ws d ie
+ret
+end
+trap 1
+end
+note isvirt: node i's output may stay in registers when it is not a graph output (flags bit 1)
+note and no node after i + 1 names its offset in any argument (conservative), nor node i + 1's b.
+fn isvirt d view dsc i ulong n ulong to ulong
+if ne and arg d i 15 2 0
+ret 0
+end
+y = arg d i 3
+if eq arg d add i 1 2 y
+ret 0
+end
+j = add i 2
+while lt j n bound 64
+for k ulong 14
+if eq arg d j add k 1 y
+ret 0
+end
+end
+j = add j 1
+end
+ret 1
+end
+note chain: last node of the fused group that starts at node i.
+fn chain d view dsc i ulong n ulong to ulong
+e = i
+while lt add e 1 n bound 64
+if eq isew arg d add e 1 0 0
+ret e
+end
+if ne arg d add e 1 1 arg d e 3
+ret e
+end
+if eq isvirt d e n 0
+ret e
+end
+e = add e 1
+end
+ret e
+end
+note dnn_run: execute the node list; with descriptor flag bit 0 set, fuse each producer with the
+note elementwise nodes that consume only its output. Returns the number of passes run.
+export fn dnn_run ws edit uint * d view dsc to ulong
+if ne get d a 0 MAGIC
+trap 1
+end
+n = get d a 1
+if gt n 31
+trap 1
+end
+ps = ulong 0
+i = ulong 0
+while lt i n bound 64
+e = i
+if eq and get d a 2 1 1
+e = chain d i n
+end
+run1 ws d or shl i 8 e
+ps = add ps 1
+i = add e 1
+end
+ret ps
+end
+export fn dnn_abi to ulong
+ret MAGIC
+end

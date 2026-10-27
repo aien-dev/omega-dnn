@@ -1,0 +1,19 @@
+{
+  "path": "aien-dev/omega-dnn",
+  "purpose": "Open deep-learning primitives (RMSNorm, LayerNorm, softmax, RoPE, SiLU/GELU/SwiGLU, flash-tiled attention, paged-KV decode, conv2d, pooling) and a small fusion-graph API, written in seeded Omega (om/dnn.om, OM-2) with ONNX operator semantics; Stack7 layer #12 (cuDNN replacement).",
+  "creator": "AIEN (lane OmegaDnn)",
+  "created_at": "2026-10-27T01:33:23Z",
+  "lineage": {
+    "parent": "aien-dev/omega-mv",
+    "parent_pin": "e5b32567a (OM-2 omc sha256 2c82480596bbdc50cda9626866209ef662d5834f278f839ff4ce0250c495029f)",
+    "bridge": "aien-dev/omega-bridge feat/slice-abi 2b59387 (PR #15, native ABI v2)",
+    "generation": 1
+  },
+  "whispers": [
+    {
+      "agent": "OmegaDnn",
+      "timestamp": "2026-10-27T01:33:23Z",
+      "message": "One OM-2 unit, one export dnn_run over a node descriptor. omc has 16 registers per function and no spilling: keep kernel parameters in the 32-word p array and split loops into helpers. tools/native refuses c-define values over 8 digits."
+    }
+  ]
+}
