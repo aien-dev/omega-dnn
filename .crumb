@@ -1,19 +1,33 @@
 {
+  "created_at": "2026-10-27T01:33:23Z",
+  "creator": "AIEN (lane OmegaDnn)",
+  "extensions": {
+    "generated": {
+      "children": [],
+      "children_root": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compiled_at": "2026-10-28T21:30:36Z",
+      "compiler": "crumb-compile/1",
+      "digest": "sha256:f32cc6d1c5f0d1413dd47c0ff841eac042c1868f2996c24ff4098fd5abbbc13b",
+      "evidence_files": 0,
+      "evidence_root": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": 9,
+      "generated_at_commit": "ca6b59ef3d63e61d0ad5983e54fc5e7f4e736b86",
+      "source_tree": "sha256:ce025f3ea2ad6cf5c0e72685c8c6c931e441b41f7f59284ebcec60cbbe7dcaae"
+    }
+  },
+  "lineage": {
+    "bridge": "aien-dev/omega-bridge feat/slice-abi 2b59387 (PR #15, native ABI v2)",
+    "generation": 1,
+    "parent": "aien-dev/omega-mv",
+    "parent_pin": "e5b32567a (OM-2 omc sha256 2c82480596bbdc50cda9626866209ef662d5834f278f839ff4ce0250c495029f)"
+  },
   "path": "aien-dev/omega-dnn",
   "purpose": "Open deep-learning primitives (RMSNorm, LayerNorm, softmax, RoPE, SiLU/GELU/SwiGLU, flash-tiled attention, paged-KV decode, conv2d, pooling) and a small fusion-graph API, written in seeded Omega (om/dnn.om, OM-2) with ONNX operator semantics; Stack7 layer #12 (cuDNN replacement).",
-  "creator": "AIEN (lane OmegaDnn)",
-  "created_at": "2026-10-27T01:33:23Z",
-  "lineage": {
-    "parent": "aien-dev/omega-mv",
-    "parent_pin": "e5b32567a (OM-2 omc sha256 2c82480596bbdc50cda9626866209ef662d5834f278f839ff4ce0250c495029f)",
-    "bridge": "aien-dev/omega-bridge feat/slice-abi 2b59387 (PR #15, native ABI v2)",
-    "generation": 1
-  },
   "whispers": [
     {
       "agent": "OmegaDnn",
-      "timestamp": "2026-10-27T01:33:23Z",
-      "message": "One OM-2 unit, one export dnn_run over a node descriptor. omc has 16 registers per function and no spilling: keep kernel parameters in the 32-word p array and split loops into helpers. tools/native refuses c-define values over 8 digits."
+      "message": "One OM-2 unit, one export dnn_run over a node descriptor. omc has 16 registers per function and no spilling: keep kernel parameters in the 32-word p array and split loops into helpers. tools/native refuses c-define values over 8 digits.",
+      "timestamp": "2026-10-27T01:33:23Z"
     }
   ]
 }
