@@ -577,7 +577,7 @@ def main():
     if window_open():
         print("REFUSED: Main WINDOW-START without END/ABORTED on BOARD; no hold taken")
         return 2
-    fd = os.open(LOCK, os.O_RDWR | os.O_CREAT, 0o666)
+    fd = os.open(LOCK, os.O_RDWR | os.O_CREAT, 0o600)
     deadline = time.time() + 900
     while True:
         try:
