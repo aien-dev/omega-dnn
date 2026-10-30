@@ -1,0 +1,16 @@
+/tmp/OmegaDnn/gpu/bench/torch_arm.py:52: UserWarning: Memory efficient kernel not used because: (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/cuda/sdp_utils.cpp:1240.)
+  return F.scaled_dot_product_attention(q, k, v, is_causal=causal, enable_gqa=True)
+/tmp/OmegaDnn/gpu/bench/torch_arm.py:52: UserWarning: Memory Efficient attention has been runtime disabled. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/sdp_utils_cpp.h:600.)
+  return F.scaled_dot_product_attention(q, k, v, is_causal=causal, enable_gqa=True)
+/tmp/OmegaDnn/gpu/bench/torch_arm.py:52: UserWarning: Flash attention kernel not used because: (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/cuda/sdp_utils.cpp:1242.)
+  return F.scaled_dot_product_attention(q, k, v, is_causal=causal, enable_gqa=True)
+/tmp/OmegaDnn/gpu/bench/torch_arm.py:52: UserWarning: Flash attention has been runtime disabled. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/sdp_utils_cpp.h:588.)
+  return F.scaled_dot_product_attention(q, k, v, is_causal=causal, enable_gqa=True)
+/tmp/OmegaDnn/gpu/bench/torch_arm.py:52: UserWarning: cuDNN attention kernel not used because: (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/cuda/sdp_utils.cpp:1244.)
+  return F.scaled_dot_product_attention(q, k, v, is_causal=causal, enable_gqa=True)
+/tmp/OmegaDnn/gpu/bench/torch_arm.py:52: UserWarning: Expected query, key and value to all be of dtype: {Half, BFloat16}. Got Query dtype: float, Key dtype: float, and Value dtype: float instead. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/sdp_utils_cpp.h:110.)
+  return F.scaled_dot_product_attention(q, k, v, is_causal=causal, enable_gqa=True)
+/tmp/OmegaDnn/gpu/bench/torch_arm.py:52: UserWarning: cuDNN attention has been runtime disabled. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/cuda/sdp_utils.cpp:922.)
+  return F.scaled_dot_product_attention(q, k, v, is_causal=causal, enable_gqa=True)
+LOCK_HELD_S 4.648857781
+GPU_RUN torch_arm correctness rc=0 lock_held_s=4.648857781 compute_apps_rows=0 apps=[] date=2026-10-27T01:24:31Z load=31.66 22.13 17.38

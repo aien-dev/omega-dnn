@@ -1,0 +1,7 @@
+prepared 32 cases on the host in 4.2s
+matmul                     cases= 32 gate_worst=0.388 gate_viol=0 exact_worst=0.854 exact_viol=0 rc_fail=0 chip= sm=
+MUTANT matmul:gemm:2                      runs=4 killed=4 refused=0 survived=0
+MUTANT matmul:gemm:1                      runs=4 killed=4 refused=0 survived=0
+PROBE {"rc": 0, "got": "0x1.0000000000000p+0", "ref": 1.0000534320715815, "err": 5.343207158148289e-05, "old_bound": 2.843293470729258e-05, "new_bound": 7.203869839242927e-05, "model_prediction": "0x1.0000000000000p+0", "info": {"route": 1, "core_type": 0, "core_calls": 1, "host_fixed": 0}}
+WITNESS {"ok": true, "rc_core": 0, "rc_ex": 0, "pack_ns": 199681, "main_ns": 108481, "call_ns": 603267, "gpr": [64, 64, 120], "bit_identical": true, "ex_info": {"route": 1, "core_type": 0, "core_calls": 1, "host_fixed": 0}}
+RESULT PASS hold=0.8s

@@ -1,0 +1,10 @@
+prepared 128 cases on the host in 0.9s
+rmsnorm                    cases= 32 gate_worst=0.299 gate_viol=0 exact_worst=0.282 exact_viol=0 rc_fail=0 chip=NVIDIA DGX Spark (Grace Blackwell GB10) sm=121
+rope                       cases= 32 gate_worst=0.667 gate_viol=0 exact_worst=0.93 exact_viol=0 rc_fail=0 chip=NVIDIA DGX Spark (Grace Blackwell GB10) sm=121
+swiglu                     cases= 32 gate_worst=0.431 gate_viol=0 exact_worst=0.441 exact_viol=0 rc_fail=0 chip=NVIDIA DGX Spark (Grace Blackwell GB10) sm=121
+silu                       cases= 32 gate_worst=0.461 gate_viol=0 exact_worst=0.448 exact_viol=0 rc_fail=0 chip=NVIDIA DGX Spark (Grace Blackwell GB10) sm=121
+MUTANT rmsnorm:ew:3                       runs=4 killed=4 refused=0 survived=0
+MUTANT rope:ew:4                          runs=4 killed=4 refused=0 survived=0
+MUTANT swiglu:ew:5                        runs=4 killed=4 refused=0 survived=0
+MUTANT silu:ew:5                          runs=4 killed=4 refused=0 survived=0
+RESULT PASS hold=0.5s

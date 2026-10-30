@@ -1,0 +1,26 @@
+prepared 160 cases on the host in 21.2s
+softmax_via_attn           cases= 32 gate_worst=0.0129 gate_viol=0 exact_worst=0.0117 exact_viol=0 rc_fail=0 chip=NVIDIA DGX Spark (Grace Blackwell GB10) sm=121
+attention_decode           cases= 32 gate_worst=0.00447 gate_viol=0 exact_worst=0.00445 exact_viol=0 rc_fail=0 chip=NVIDIA DGX Spark (Grace Blackwell GB10) sm=121
+attention_prefill_causal   cases= 32 gate_worst=0.01 gate_viol=0 exact_worst=0.00849 exact_viol=0 rc_fail=0 chip=NVIDIA DGX Spark (Grace Blackwell GB10) sm=121
+paged_decode_batch         cases= 32 gate_worst=0.00432 gate_viol=0 exact_worst=0.00473 exact_viol=0 rc_fail=0 chip=NVIDIA DGX Spark (Grace Blackwell GB10) sm=121
+paged_decode_single        cases= 32 gate_worst=0.00311 gate_viol=0 exact_worst=0.00266 exact_viol=0 rc_fail=0 chip=NVIDIA DGX Spark (Grace Blackwell GB10) sm=121
+MUTANT softmax_via_attn:attn:1            runs=4 killed=4 refused=0 survived=0
+MUTANT attention_decode:attn:2            runs=4 killed=4 refused=0 survived=0
+MUTANT attention_decode:attn:5            runs=4 killed=4 refused=0 survived=0
+MUTANT attention_decode:attn:6            runs=4 killed=4 refused=0 survived=0
+MUTANT attention_prefill_causal:attn:5    runs=4 killed=4 refused=0 survived=0
+MUTANT attention_prefill_causal:attn:6    runs=4 killed=4 refused=0 survived=0
+MUTANT paged_decode_batch:attn:2          runs=4 killed=4 refused=0 survived=0
+MUTANT paged_decode_batch:attn:5          runs=4 killed=4 refused=0 survived=0
+MUTANT paged_decode_batch:attn:6          runs=4 killed=4 refused=0 survived=0
+MUTANT paged_decode_batch:attn:3          runs=4 killed=4 refused=0 survived=0
+MUTANT paged_decode_single:attn:2         runs=4 killed=4 refused=0 survived=0
+MUTANT paged_decode_single:attn:5         runs=4 killed=4 refused=0 survived=0
+MUTANT paged_decode_single:attn:6         runs=4 killed=4 refused=0 survived=0
+MUTANT paged_decode_single:attn:3         runs=4 killed=4 refused=0 survived=0
+MUTANT paged_decode_single:attn:4         runs=4 killed=4 refused=0 survived=0
+MUTANT attention_decode:attn:4            runs=4 killed=4 refused=0 survived=0
+MUTANT attention_prefill_causal:attn:2    runs=4 killed=4 refused=0 survived=0
+MUTANT paged_decode_batch:attn:4          runs=4 killed=4 refused=0 survived=0
+MUTANT attention_prefill_causal:attn:4    runs=4 killed=4 refused=0 survived=0
+RESULT PASS hold=2.4s

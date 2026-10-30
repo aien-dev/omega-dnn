@@ -1,0 +1,9 @@
+{"case":"rmsnorm_1x2048","rc":0,"mutant":1,"first_call_ns":186141689,"warm":0,"reps":0,"timed_outputs_differing_from_first":0,"wall_ns":[],"chip_ns":[]}
+{"case":"rmsnorm_64x2048","rc":0,"mutant":1,"first_call_ns":892072,"warm":0,"reps":0,"timed_outputs_differing_from_first":0,"wall_ns":[],"chip_ns":[]}
+{"case":"rope_32x128","rc":0,"mutant":1,"first_call_ns":317939,"warm":0,"reps":0,"timed_outputs_differing_from_first":0,"wall_ns":[],"chip_ns":[]}
+{"case":"swiglu_5632","rc":0,"mutant":1,"first_call_ns":265714,"warm":0,"reps":0,"timed_outputs_differing_from_first":0,"wall_ns":[],"chip_ns":[]}
+{"case":"swiglu_131072","rc":0,"mutant":1,"first_call_ns":627158,"warm":0,"reps":0,"timed_outputs_differing_from_first":0,"wall_ns":[],"chip_ns":[]}
+{"case":"gqa_f32_32q8kv_hd128_ctx2048","rc":0,"mutant":1,"first_call_ns":4151061,"warm":0,"reps":0,"timed_outputs_differing_from_first":0,"wall_ns":[],"chip_ns":[]}
+{"case":"gqa_f32_32q4kv_hd64_ctx2048","rc":0,"mutant":1,"first_call_ns":997017,"warm":0,"reps":0,"timed_outputs_differing_from_first":0,"wall_ns":[],"chip_ns":[]}
+{"case":"gqa_rows_f32_32q8kv_hd128_m256","rc":0,"mutant":1,"first_call_ns":4376966,"warm":0,"reps":0,"timed_outputs_differing_from_first":0,"wall_ns":[],"chip_ns":[]}
+{"case":"paged_bf16_32q8kv_hd128_ctx2048_bs16","rc":0,"mutant":1,"first_call_ns":490900,"warm":0,"reps":0,"timed_outputs_differing_from_first":0,"wall_ns":[],"chip_ns":[]}

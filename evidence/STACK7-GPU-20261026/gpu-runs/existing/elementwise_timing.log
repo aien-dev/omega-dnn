@@ -1,0 +1,3 @@
+PASS timing rmsnorm_1x2048 first_call_ms=140.205 ok_calls=100/100 violations=0 worst_scaled_err=0 median_ms=0.105 p90_ms=0.106 min_ms=0.067 max_ms=0.113 chip_us_mean=101.6 device_opens=1
+PASS timing swiglu_5632 first_call_ms=0.749 ok_calls=100/100 violations=0 worst_scaled_err=0.0208791 median_ms=0.109 p90_ms=0.112 min_ms=0.064 max_ms=0.177 chip_us_mean=101.7 device_opens=1
+PASS: 4 checks, 0 failed

@@ -1,0 +1,16 @@
+KILLED         silu sign: silu swiglu fused_mm_bias_swiglu
+KILLED         rms mean divides by n-1: rms_norm
+KILLED         gelu tanh cubic coefficient: gelu_tanh
+KILLED         layernorm drops eps: layer_norm
+KILLED         softmax without max subtraction: softmax_large
+KILLED         rope second half sign: rope rope_interleaved
+KILLED         causal mask excludes the diagonal: attention
+KILLED         GQA head mapping: attention
+KILLED         paged decode ignores sequence length: paged_decode
+KILLED         conv bias channel: conv2d_algo0
+KILLED         im2col block column offset: conv2d_algo1
+KILLED         maxpool starts at zero: maxpool
+KILLED         avgpool count_include_pad area: avgpool
+KILLED         fusion never virtualises: fused_mm_bias_swiglu fusion_passes
+MUTANTS total=14 survived=0
+rc=0
